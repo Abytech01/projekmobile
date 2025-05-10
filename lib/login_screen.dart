@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projekmobile/profile_screen.dart';
+import 'profile_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -8,50 +10,54 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool statusPassword = true;
-  bool statusWarna = true;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  tampilPassword() {
-    setState(() {
-      statusPassword = !statusPassword;
-    });
-  }
+  void _login() {
+    final email = _emailController.text;
+    final password = _passwordController.text;
 
-  gantiWarna() {
-    setState(() {
-      statusWarna = !statusWarna;
-    });
+    if (email.isNotEmpty && password.isNotEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email dan password wajib diisi')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          statusWarna ? Colors.pink : const Color.fromARGB(255, 34, 184, 201),
-      body: Column(
-        children: [
-          TextField(),
-          TextField(
-            obscureText: statusPassword,
-            decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
-              prefixIcon: Icon(Icons.lock),
-              suffixIcon: IconButton(
-                icon: Icon(Icons.visibility),
-                onPressed: () {
-                  tampilPassword();
-                },
+      appBar: AppBar(title: const Text('Login Screen')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
               ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              gantiWarna();
-            },
-            child: Text('Ganti Warna'),
-          ),
-        ],
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(onPressed: _login, child: const Text('Login')),
+          ],
+        ),
       ),
     );
   }
